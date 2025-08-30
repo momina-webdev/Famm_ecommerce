@@ -1,0 +1,334 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <title>Famms - Fashion</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="" />
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    .cart_modal_content { border-radius: 12px; }
+    .cart_modal_content .modal-header,
+    .cart_modal_content .modal-footer {
+      background-color: #f7444db6;
+      color: white;
+      border: none;
+    }
+    .cart_modal_content .btn-primary {
+      background-color: white;
+      color: #f7444e;
+      font-weight: 600;
+      border: none;
+    }
+    .cart_modal_content .btn-primary:hover {
+      background-color: #f7444e;
+      color: white;
+    }
+    .cart_modal_content .form-control { border-radius: 8px; }
+    a { text-decoration: none; }
+
+    .cart-icon {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background-color: #f7444e;
+      color: white;
+      border-radius: 50%;
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: bold;
+      user-select: none;
+    }
+
+    .sale-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background-color: #f7444e;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      box-shadow: 0 0 6px rgba(247, 68, 78, 0.7);
+      z-index: 10;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #222;
+      margin-bottom: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    .price-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .sale-price {
+      color: #f7444e;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+    .original-price {
+      color: #888;
+      font-size: 1rem;
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+    .regular-price {
+      color: #333;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    /* --- Responsive Fixes --- */
+    @media (max-width: 991px) {
+      .navbar-collapse {
+        background: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+      .navbar-nav { gap: 10px; }
+    }
+    @media (max-width: 768px) {
+      footer .row { text-align: center; }
+      footer .widget_menu { margin-bottom: 20px; }
+    }
+    @media (max-width: 576px) {
+      .logo_footer img { width: 160px; }
+    }
+
+    /* Offcanvas */
+    .offcanvas { width: 260px; background: #fff; }
+    .offcanvas .nav-link {
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .offcanvas .nav-link:hover {
+      background: rgba(247, 68, 78, 0.08);
+      color: #f7444e;
+    }
+    .offcanvas-header { border-bottom: 1px solid #f1f1f1; }
+    .dropdown-menu { border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <!-- ✅ HEADER -->
+  <header class="header_section shadow-sm sticky-top">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg bg-white">
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold text-black" href="/">
+          <img src="{% static 'img/logo.png' %}" alt="Logo" width="160" />
+        </a>
+
+        <!-- Toggle Button -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Desktop Nav -->
+        <div class="collapse navbar-collapse d-none d-lg-block">
+          <ul class="navbar-nav ms-auto align-items-lg-center fw-bold">
+            <li class="nav-item">
+              <a class="nav-link fs-5 fw-bold text-black" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fs-5 fw-bold text-black" href="{% url 'product' %}">Products</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link fs-5 fw-bold text-black" href="{% url 'contact' %}">Contact</a>
+            </li>
+
+            <!-- Cart -->
+            {% if request.path == '/' %}
+            <li class="nav-item position-relative">
+              <a class="nav-link text-black" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="fas fa-shopping-cart"></i>
+                {% if cart_count and cart_count > 0 %}
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ cart_count }}
+                  </span>
+                {% endif %}
+              </a>
+            </li>
+            {% endif %}
+
+            <!-- User Dropdown -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-black" href="#" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user"></i>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="userMenu">
+                {% if user.is_authenticated %}
+                  <li><a class="dropdown-item" href="{% url 'Account' %}">My Account</a></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                  <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ✅ Mobile Offcanvas Menu -->
+  <div class="offcanvas offcanvas-start border-0" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+      <h5 class="fw-bold" id="mobileMenuLabel">Menu</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body fw-bold">
+      <ul class="navbar-nav text-start">
+        <li class="nav-item"><a class="nav-link text-black" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link text-black" href="{% url 'product' %}">Products</a></li>
+        <li class="nav-item"><a class="nav-link text-black" href="{% url 'contact' %}">Contact</a></li>
+
+        <li class="nav-item mt-2">
+          <a class="nav-link text-black" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+            <i class="fas fa-shopping-cart"></i> Cart
+            {% if cart_count and cart_count > 0 %}
+              <span class="badge bg-danger ms-2">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+
+        <li class="nav-item dropdown mt-2">
+          <a class="nav-link dropdown-toggle text-black" href="#" id="userMenuMobile" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user"></i> Account
+          </a>
+          <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="userMenuMobile">
+            {% if user.is_authenticated %}
+              <li><a class="dropdown-item" href="{% url 'Account' %}">My Account</a></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+            {% else %}
+              <li><a class="dropdown-item" href="{% url 'login' %}">Login</a></li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ✅ Main Content -->
+  {% block body %}{% endblock body %}
+
+  <!-- ✅ Footer -->
+  <footer class="d-none d-lg-block">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="full">
+            <div class="logo_footer">
+              <a href="#"><img width="210" src="{% static 'img/logo.png' %}" alt="#" /></a>
+            </div>
+            <div class="information_f">
+              <p><strong>ADDRESS:</strong> 28 White tower, Street Name New York City, USA</p>
+              <p><strong>TELEPHONE:</strong> +91 987 654 3210</p>
+              <p><strong>EMAIL:</strong> yourmain@gmail.com</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-7">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="widget_menu">
+                    <h3>Menu</h3>
+                    <ul>
+                      <li><a href="#">Home</a></li>
+                      <li><a href="#">About</a></li>
+                      <li><a href="#">Services</a></li>
+                      <li><a href="#">Testimonial</a></li>
+                      <li><a href="#">Blog</a></li>
+                      <li><a href="#">Contact</a></li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="widget_menu">
+                    <h3>Account</h3>
+                    <ul>
+                      <li><a href="#">Account</a></li>
+                      <li><a href="#">Checkout</a></li>
+                      <li><a href="#">Login</a></li>
+                      <li><a href="#">Register</a></li>
+                      <li><a href="#">Shopping</a></li>
+                      <li><a href="#">Widget</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <div class="widget_menu">
+                <h3>Newsletter</h3>
+                <div class="information_f">
+                  <p>Subscribe by our newsletter and get update protidin.</p>
+                </div>
+                <div class="form_sub">
+                  <form>
+                    <fieldset>
+                      <div class="field">
+                        <input type="email" placeholder="Enter Your Mail" name="email" />
+                        <input type="submit" value="Subscribe" />
+                      </div>
+                    </fieldset>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="cpy_">
+    <p>© 2025 All Rights Reserved By <a href="">Momina Rasheed</a></p>
+  </div>
+
+  <!-- ✅ JS Scripts -->
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

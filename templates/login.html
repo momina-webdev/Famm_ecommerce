@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Famms - Fashion</title>
+   <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+</head>
+<body>
+  <div class="container">
+    <!-- Left Section (Lottie) -->
+    <div class="left-section">
+      <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js" type="module"></script>
+      <dotlottie-wc 
+        src="https://lottie.host/7b9c0928-170f-4f98-a641-01718bf38a5c/jQc1MHxFLF.lottie" 
+        style="width: 350px; height: 400px;" 
+        speed="1" autoplay loop>
+      </dotlottie-wc>
+    </div>
+
+    <!-- Right Login Form Section -->
+    <div class="right-section">
+      <h1 class="logo"><img src="{% static 'img/logo.png' %}" alt="Logo"  width="210"/></h1>
+      
+      <p class="desc">Login to access your orders, wishlist, and more!</p>
+        <!-- Google Login -->
+      <a href="{% url 'social:begin' 'google-oauth2' %}" class="fb-btn">
+        <img src="https://img.icons8.com/color/24/google-logo.png" alt="Google Icon" />
+        Log in with Google
+      </a>
+      <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username " required />
+        <input type="password" name="password" placeholder="Password" required />
+        <button type="submit" class="signup-btn">Login</button>
+      </form>
+
+      <div class="register-link">
+        Don’t have an account? <a href="{% url 'register' %}">Register here</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

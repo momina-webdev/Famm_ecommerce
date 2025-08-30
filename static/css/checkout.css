@@ -1,0 +1,129 @@
+ body {
+    background: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .checkout-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 40px 15px;
+    max-width: 1100px;
+    margin: auto;
+    flex-wrap: wrap; /* ✅ mobile pe wrap hoga */
+  }
+
+  /* Checkout Form */
+  .checkout-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 30px;
+    flex: 0 0 60%;
+    min-width: 300px;
+  }
+
+  .checkout-title {
+    font-weight: bold;
+    font-size: 2rem;
+    color: #f7444e;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .form-control, .form-select {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    background: #fff9fb;
+  }
+
+  label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 4px;
+  }
+
+  .btn-checkout {
+    background-color: #f7444e;
+    border: none;
+    color: #fff;
+    padding: 12px;
+    font-weight: bold;
+    border-radius: 10px;
+    transition: 0.3s;
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .btn-checkout:hover {
+    background-color: #d73842;
+  }
+
+  /* Order Summary */
+  .order-summary {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    flex: 0 0 35%;
+    height: fit-content;
+    min-width: 280px;
+  }
+
+  .summary-title {
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: #f7444e;
+    margin-bottom: 15px;
+  }
+
+  .list-group-item {
+    border: none;
+    background: transparent;
+    padding: 8px 0;
+  }
+
+  .total-row {
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  /* ✅ Responsive Design */
+  @media (max-width: 992px) {
+    .checkout-wrapper {
+      flex-direction: column; /* stack vertically */
+      padding: 20px;
+    }
+
+    .checkout-card, .order-summary {
+      flex: 100%;
+      width: 100%;
+    }
+
+    .checkout-title {
+      font-size: 1.8rem;
+    }
+
+    .summary-title {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .checkout-card {
+      padding: 20px;
+    }
+
+    .checkout-title {
+      font-size: 1.5rem;
+    }
+
+    .btn-checkout {
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+  }

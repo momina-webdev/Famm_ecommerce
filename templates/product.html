@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+<link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="">
+
+{% block body %}
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+
+<!-- Inner Page -->
+<section class="inner_page_head">
+  <div class="container_fuild">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="full">
+          <h3>Product Grid</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Product Section -->
+<section class="product_section layout_padding">
+  <div class="container">
+    <div class="heading_container heading_center">
+      <h2>Our <span>products</span></h2>
+    </div>
+    <div class="row">
+
+      <!-- Left: Filters -->
+      <div class="col-lg-3">
+        <div class="filter-box p-3 mb-4"
+             style="background: rgba(255, 255, 255, 0.85); 
+                    border-radius: 15px; 
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+                    backdrop-filter: blur(8px);">
+          
+          <h4 style="font-weight:600; color:#f7444e; margin-bottom:15px;">
+            Filter Products
+          </h4>
+          
+          <form method="GET" action="">
+            
+            <!-- Category -->
+            <div class="form-group mb-3">
+              <label style="font-weight:600; font-size:0.95rem; color:#333;">Category</label><br>
+              
+              <label class="custom-checkbox">
+                <input type="checkbox" name="category" value="Men" {% if "Men" in selected_categories %}checked{% endif %}>
+                Men's T-Shirt
+              </label><br>
+
+              <label class="custom-checkbox">
+                <input type="checkbox" name="category" value="Women" {% if "Women" in selected_categories %}checked{% endif %}>
+                Women's T-Shirt
+              </label><br>
+
+              <label class="custom-checkbox">
+                <input type="checkbox" name="category" value="Unisex" {% if "Unisex" in selected_categories %}checked{% endif %}>
+                Unisex T-Shirt
+              </label><br>
+
+              <label class="custom-checkbox">
+                <input type="checkbox" name="category" value="Kids" {% if "Kids" in selected_categories %}checked{% endif %}>
+                Kids T-Shirt
+              </label>
+            </div>
+
+            <!-- Price Range -->
+            <div class="form-group mb-4">
+              <label style="font-weight:600; font-size:0.95rem; color:#333;">Price Range (Max)</label>
+              
+              <input type="range" class="form-range w-100"
+                     min="0" max="1000" step="10" 
+                     name="max_price" id="priceRange"
+                     value="{{ request.GET.max_price|default:'1000' }}" 
+                     oninput="updatePriceValue(this.value)">
+              
+              <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#555;">
+                <span>$0</span>
+                <span id="priceValue">${{ max_price }}</span>
+              </div>
+            </div>
+
+            <!-- Sort By -->
+            <div class="form-group mb-4">
+              <label style="font-weight:600; font-size:0.95rem; color:#333;">Sort By</label>
+              
+              <select class="form-control" style="border-radius:8px; border:1px solid #ddd; background:#fff;">
+                <option value="" {% if not sort %}selected{% endif %}>Default</option>
+                <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+                <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+              </select>
+            </div>
+
+            <button type="submit" 
+                    style="background-color:#f7444e; color:#fff; border:none; padding:12px; 
+                           border-radius:8px; font-weight:600; width:100%; transition:0.3s;">
+              Apply Filters
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <script>
+        function updatePriceValue(val) {
+          document.getElementById('priceValue').textContent = '$' + val;
+        }
+      </script>
+
+      <!-- Right: Product Grid -->
+      <div class="col-lg-9">
+        <div class="row">
+          {% for product in products %}
+          <div class="col-sm-6 col-md-4 col-lg-4">
+            <div class="box">
+              <div class="option_container">
+                <div class="options">
+                  <a href="{% url 'product_detail' product.pk %}" class="option1">Add To Cart</a>
+                  <a href="{% url 'product_detail' product.pk %}" class="option2">Buy Now</a>
+                </div>
+              </div>
+              <div class="img-box">
+                {% if product.image_main %}
+                  <img src="{{ product.image_main.url }}" alt="{{ product.name }}">
+                {% endif %}
+              </div>
+              <div class="detail-box">
+                <h5>{{ product.name }}</h5>
+                <h6>${{ product.price }}</h6>
+              </div>
+            </div>
+          </div>
+          {% empty %}
+          <p>No products found.</p>
+          {% endfor %}
+        </div>
+
+        <div class="btn-box text-center mt-4">
+          <a href="">View All products</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content cart_modal_content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cartModalLabel">Your Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table align-middle text-center">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Name</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img src="{% static 'img/p2.png' %}" class="img-thumbnail" style="width: 60px;"></td>
+              <td>Men's Shirt</td>
+              <td>
+                <input type="number" value="1" class="form-control form-control-sm" style="width: 60px;">
+              </td>
+              <td>$75</td>
+              <td>
+                <button class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></button>
+              </td>
+            </tr>
+            <!-- Add more rows here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <h5>Total: <strong>$75</strong></h5>
+        <button class="btn btn-primary" onclick="window.location.href='{% url 'checkout' %}'">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

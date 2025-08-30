@@ -1,0 +1,199 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
+ <link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+<div class="container product-detail">
+  <div class="row product-card">
+    
+    <!-- Left: Images -->
+    <div class="col-lg-6 d-flex">
+      
+      <!-- Thumbnails -->
+      <div class="thumbs-col me-3 d-flex flex-column">
+        {% if product.image_main %}
+          <img src="{{ product.image_main.url }}" class="thumbnail-img active" onclick="changeImage('{{ product.image_main.url }}', this)" />
+        {% endif %}
+        {% if product.image_thumb1 %}
+          <img src="{{ product.image_thumb1.url }}" class="thumbnail-img" onclick="changeImage('{{ product.image_thumb1.url }}', this)" />
+        {% endif %}
+        {% if product.image_thumb2 %}
+          <img src="{{ product.image_thumb2.url }}" class="thumbnail-img" onclick="changeImage('{{ product.image_thumb2.url }}', this)" />
+        {% endif %}
+        {% if product.image_thumb3 %}
+          <img src="{{ product.image_thumb3.url }}" class="thumbnail-img" onclick="changeImage('{{ product.image_thumb3.url }}', this)" />
+        {% endif %}
+      </div>
+      
+      <!-- Main Image -->
+      <div class="main-img-box flex-grow-1">
+        {% if product.image_main %}
+          <img id="mainImage" src="{{ product.image_main.url }}" alt="{{ product.name }}" />
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Right: Product Details -->
+    <div class="col-lg-6 mt-4 mt-lg-0">
+      <h3>{{ product.name }}</h3>
+      <p class="text-muted">SKU: {{ product.sku }}</p>
+      <h4 class="text-danger">${{ product.price }}</h4>
+      
+      <p>{{ product.description }}</p>
+
+      <form method="POST" action="{% url 'add_to_cart' product.id %}">
+        {% csrf_token %}
+
+        <div class="mb-3">
+          <strong>Select Size:</strong>
+          <div class="size-options mt-2" id="sizeOptions">
+            <span class="active">S</span>
+            <span>M</span>
+            <span>L</span>
+            <span>XL</span>
+          </div>
+          <!-- Hidden input to store selected size -->
+          <input type="hidden" name="size" id="selectedSize" value="S" />
+          <input type="hidden" name="product_id" value="{{ product.pk }}">
+        </div>
+
+        <div class="mb-4 d-flex align-items-center">
+          <strong class="me-3">Qty:</strong>
+          <input type="number" name="quantity" value="1" min="1" class="form-control qty-box" />
+        </div>
+
+        <!-- Hidden inputs for product info -->
+        <input type="hidden" name="product_name" value="{{ product.name }}">
+         
+<input type="hidden" name="price" value="{{ product.price }}">
+
+
+        <input type="hidden" name="image_url" value="{{ product.image_main.url }}">
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-primary">Add to Cart</button>
+          <button type="button" class="btn btn-outline-dark">Buy Now</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function changeImage(src, element) {
+  document.getElementById('mainImage').src = src;
+  document.querySelectorAll('.thumbnail-img').forEach(img => img.classList.remove('active'));
+  element.classList.add('active');
+}
+
+// Size selection logic
+const sizeSpans = document.querySelectorAll('#sizeOptions span');
+const selectedSizeInput = document.getElementById('selectedSize');
+
+sizeSpans.forEach(span => {
+  span.addEventListener('click', () => {
+    sizeSpans.forEach(s => s.classList.remove('active'));
+    span.classList.add('active');
+    selectedSizeInput.value = span.textContent;
+  });
+});
+</script>
+
+<script>
+function changeImage(src, element) {
+  document.getElementById('mainImage').src = src;
+  document.querySelectorAll('.thumbnail-img').forEach(img => img.classList.remove('active'));
+  element.classList.add('active');
+}
+</script>
+
+
+<!-- JS -->
+<script>
+    function changeImage(src) {
+        document.getElementById("mainImage").src = src;
+    }
+    // Size Selection
+  const sizeSpans = document.querySelectorAll('#sizeOptions span');
+  sizeSpans.forEach(span => {
+    span.addEventListener('click', () => {
+      sizeSpans.forEach(s => s.classList.remove('active'));
+      span.classList.add('active');
+    });
+  });
+</script>
+
+<!-- Cart Modal -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content cart_modal_content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cartModalLabel">Your Cart</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table align-middle text-center">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+{% for items in items %}
+<tr>
+  <td>
+    <img src="{{ items.image_url }}" class="img-thumbnail" style="width: 60px;">
+  </td>
+  <td>{{ items.product_name }}</td>
+  <td>
+    <select class="form-select form-select-sm" style="width: 80px;" disabled>
+      <option>{{ items.size }}</option>
+    </select>
+  </td>
+  <td>
+    <input type="number" value="{{ items.quantity }}" class="form-control form-control-sm" style="width: 60px;" readonly>
+  </td>
+  <td>${{ items.price }}</td>
+  <td>
+    <form action="{% url 'remove_cart_item' items.id %}" method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline-danger btn-sm">
+        <i class="fas fa-trash"></i>
+      </button>
+    </form>
+  </td>
+</tr>
+{% empty %}
+<tr>
+  <td colspan="6">Your cart is empty.</td>
+</tr>
+{% endfor %}
+</tbody>
+
+        </table>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+  <h5>Total: <strong>${{ total_cost }}</strong></h5>
+  {% comment %} <button class="btn btn-primary" onclick="window.location.href='{% url 'checkout' %}'">
+    Proceed to Checkout
+  </button> {% endcomment %}
+  <form method="post" action="{% url 'checkout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Checkout</button>
+</form>
+</div>
+    </div>
+  </div>
+</div>
+
+{% endblock body %}
+
+
+
+

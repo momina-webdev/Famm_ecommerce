@@ -1,0 +1,15 @@
+/* Custom Primary Color Override */
+  .bg-primary {
+    background-color: #f7444e !important;
+  }
+  .btn-primary {
+    background-color: #f7444e !important;
+    border-color: #f7444e !important;
+  }
+  .btn-primary:hover {
+    background-color: #d9363f !important; /* Thoda dark hover effect */
+    border-color: #d9363f !important;
+  }
+  .text-primary {
+    color: #f7444e !important;
+  }

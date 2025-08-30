@@ -1,0 +1,141 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      width: 50%;
+      height: 70vh;
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    
+    }
+
+    .left-section {
+      flex: 1;
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0px;
+    }
+
+    .right-section {
+      flex: 1;
+      padding: 60px 0px;
+      padding-right:40px;
+      text-align: center;
+      background-color: #ffffff;
+    }
+
+    .logo {
+      font-size: 36px;
+      font-weight: bold;
+      color: #f7444e;
+      margin-bottom: 10px;
+    }
+
+    .desc {
+      color: #555;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    form input {
+      padding: 12px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    form input:focus {
+      border-color: #f7444e;
+    }
+
+    .signup-btn {
+      background-color: #f7444e;
+      color: white;
+      border: none;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .signup-btn:hover {
+      background-color: #dc3545;
+    }
+     .fb-btn {
+      background-color: #dc3546f1;
+      color: white;
+      padding: 12px;
+      width: 100%;
+      font-weight: 600;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 20px;
+    }
+
+
+    .register-link {
+      font-size: 14px;
+      margin-top: 10px;
+      color: #555;
+    }
+    .fb-btn{
+      text-decoration: none;
+    }
+    .register-link a {
+      color: #f7444e;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+      }
+
+      .left-section {
+        display: none;
+      }
+
+      .right-section {
+        padding: 30px 20px;
+      }
+    }
